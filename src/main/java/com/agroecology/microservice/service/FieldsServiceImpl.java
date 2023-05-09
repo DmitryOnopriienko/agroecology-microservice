@@ -8,6 +8,8 @@ import com.opencsv.CSVReaderBuilder;
 import org.springframework.stereotype.Service;
 
 import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class FieldsServiceImpl implements FieldsService {
@@ -28,6 +30,24 @@ public class FieldsServiceImpl implements FieldsService {
       e.printStackTrace();
     }
     throw new NotFoundException("Field with name " + name + " not found");
+  }
+
+  @Override
+  public List<Field> getAllData() {
+    List<Field> fields = new ArrayList<>();
+    try (CSVReader reader =
+            new CSVReaderBuilder(new FileReader("./src/main/resources/fields.csv"))
+                    .withSkipLines(1)
+                    .withCSVParser(new CSVParserBuilder().withSeparator(';').build())
+                    .build()) {
+      String [] nextLine;
+      while ((nextLine = reader.readNext()) != null) {
+        fields.add(mapToField(nextLine));
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return fields;
   }
 
   private static Field mapToField(String[] line) {
