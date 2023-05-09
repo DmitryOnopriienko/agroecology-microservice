@@ -19,7 +19,6 @@ public class ServiceController {
 
   @GetMapping("/data/{name}")
   public Field getDataAboutField(@PathVariable("name") String name) {
-    System.out.println("Log: Request for " + name + " field");
     return fieldsService.getData(name);
   }
 }
