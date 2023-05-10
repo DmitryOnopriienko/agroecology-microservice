@@ -7,7 +7,9 @@ import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
 import org.springframework.stereotype.Service;
 
+import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,8 +17,10 @@ import java.util.List;
 public class FieldsServiceImpl implements FieldsService {
   @Override
   public Field getData(String name) {
-    try (CSVReader reader =
-                 new CSVReaderBuilder(new FileReader("./src/main/resources/fields.csv"))
+    try (InputStreamReader inputStreamReader =
+                 new InputStreamReader(getClass().getResourceAsStream("/fields.csv"));
+            CSVReader reader =
+                 new CSVReaderBuilder(new BufferedReader(inputStreamReader))
                          .withSkipLines(1)
                          .withCSVParser(new CSVParserBuilder().withSeparator(';').build())
                          .build()) {
@@ -35,11 +39,13 @@ public class FieldsServiceImpl implements FieldsService {
   @Override
   public List<Field> getAllData() {
     List<Field> fields = new ArrayList<>();
-    try (CSVReader reader =
-            new CSVReaderBuilder(new FileReader("./src/main/resources/fields.csv"))
-                    .withSkipLines(1)
-                    .withCSVParser(new CSVParserBuilder().withSeparator(';').build())
-                    .build()) {
+    try (InputStreamReader inputStreamReader =
+                 new InputStreamReader(getClass().getResourceAsStream("/fields.csv"));
+         CSVReader reader =
+                 new CSVReaderBuilder(new BufferedReader(inputStreamReader))
+                         .withSkipLines(1)
+                         .withCSVParser(new CSVParserBuilder().withSeparator(';').build())
+                         .build()) {
       String [] nextLine;
       while ((nextLine = reader.readNext()) != null) {
         fields.add(mapToField(nextLine));
